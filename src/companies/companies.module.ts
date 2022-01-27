@@ -8,5 +8,6 @@ import { StatesModule } from 'src/states/states.module';
 @Module({
   imports: [TypeOrmModule.forFeature([CompanyEntity]), StatesModule],
   providers: [CompaniesService, CompaniesResolver],
+  exports: [CompaniesService],
 })
 export class CompaniesModule {}

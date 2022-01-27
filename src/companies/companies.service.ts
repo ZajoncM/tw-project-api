@@ -1,10 +1,8 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { GetCompanyArgs } from './dto/args/get-company.args';
-import { GetCompaniesArgs } from './dto/args/get-companies.args';
 import { CreateCompanyInput } from './dto/input/create-company';
-import { DeleteCompanyInput } from './dto/input/delete-company';
+
 import { UpdateCompanyInput } from './dto/input/update-company';
 import { CompanyEntity } from './entities/company.entity';
 import { StatesService } from 'src/states/states.service';
@@ -34,37 +32,29 @@ export class CompaniesService {
     id: number,
     updateCompanyData: UpdateCompanyInput,
   ) {
-    const company = await this.companyRepository.preload({
-      // ...updateCompanyData,
-      id,
-    });
+    await this.companyRepository.update({ id }, { ...updateCompanyData });
 
-    if (!company) {
-      throw new NotFoundException('company not found');
-    }
-
-    return company.save();
+    return this.getCompany(id);
   }
 
-  public async getCompany(getCompanyArgs: GetCompanyArgs) {
-    const company = await this.companyRepository.findOne({ ...getCompanyArgs });
+  public async getCompany(id: number) {
+    const company = await this.companyRepository.findOne(
+      { id },
+      { relations: ['state', 'years'] },
+    );
 
     return company;
   }
 
-  public async getCompanies(getCompaniesArgs: GetCompaniesArgs) {
-    const companies = await Promise.all(
-      getCompaniesArgs.companyNames.map((companyName) =>
-        this.companyRepository.findOne({ companyName }),
-      ),
-    );
+  public async getCompanies() {
+    const companies = this.companyRepository.find();
 
     return companies;
   }
 
-  public async deleteCompany(deleteCompanyData: DeleteCompanyInput) {
-    const company = await this.getCompany(deleteCompanyData);
+  public async deleteCompany(id: number) {
+    const company = await this.getCompany(id);
 
-    return this.companyRepository.remove(company);
+    return await this.companyRepository.remove(company);
   }
 }

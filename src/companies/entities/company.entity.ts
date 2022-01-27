@@ -1,5 +1,5 @@
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
-import { IsOptional, ValidateNested } from 'class-validator';
+import { ValidateNested } from 'class-validator';
 import { CompanyYearEntity } from 'src/company-year/entities/company-year.entity';
 import { StateEntity } from 'src/states/entities/state.entity';
 import {
@@ -12,8 +12,8 @@ import {
 } from 'typeorm';
 
 @InputType({ isAbstract: true })
-@ObjectType()
-@Entity('company')
+@ObjectType('Company')
+@Entity({ name: 'company' })
 export class CompanyEntity extends BaseEntity {
   @Field()
   @PrimaryGeneratedColumn()
@@ -54,6 +54,7 @@ export class CompanyEntity extends BaseEntity {
   })
   state: StateEntity;
 
+  @Field(() => [CompanyYearEntity])
   @OneToMany(() => CompanyYearEntity, (companyYear) => companyYear.company)
   years: CompanyYearEntity[];
 }

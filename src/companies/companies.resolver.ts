@@ -1,9 +1,6 @@
 import { Args, Resolver, Query, Mutation, ID } from '@nestjs/graphql';
 import { CompaniesService } from './companies.service';
-import { GetCompanyArgs } from './dto/args/get-company.args';
-import { GetCompaniesArgs } from './dto/args/get-companies.args';
 import { CreateCompanyInput } from './dto/input/create-company';
-import { DeleteCompanyInput } from './dto/input/delete-company';
 import { UpdateCompanyInput } from './dto/input/update-company';
 import { CompanyEntity } from './entities/company.entity';
 
@@ -11,14 +8,14 @@ import { CompanyEntity } from './entities/company.entity';
 export class CompaniesResolver {
   constructor(private readonly companiesService: CompaniesService) {}
 
-  @Query(() => CompanyEntity, { name: 'company', nullable: true })
-  getCompany(@Args() getCompanyArgs: GetCompanyArgs) {
-    return this.companiesService.getCompany(getCompanyArgs);
+  @Query(() => CompanyEntity, { name: 'company' })
+  getCompany(@Args({ name: 'id', type: () => ID }) id: number) {
+    return this.companiesService.getCompany(id);
   }
 
   @Query(() => [CompanyEntity], { name: 'companies', nullable: true })
-  getCompanies(@Args() getCompaniesArgs: GetCompaniesArgs) {
-    return this.companiesService.getCompanies(getCompaniesArgs);
+  getCompanies() {
+    return this.companiesService.getCompanies();
   }
 
   @Mutation(() => CompanyEntity)
@@ -37,9 +34,7 @@ export class CompaniesResolver {
   }
 
   @Mutation(() => CompanyEntity)
-  deleteCompany(
-    @Args('deleteCompanyData') deleteCompanyData: DeleteCompanyInput,
-  ) {
-    return this.companiesService.deleteCompany(deleteCompanyData);
+  deleteCompany(@Args({ name: 'id', type: () => ID }) id: number) {
+    return this.companiesService.deleteCompany(id);
   }
 }
