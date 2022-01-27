@@ -1,7 +1,7 @@
 import { registerAs } from '@nestjs/config';
 
 export const DatabaseConfig = registerAs('database', () => ({
-  host: process.env.DATABASE_HOST,
+  host: process.env.DATABASE_URL,
 
   database: process.env.DATABASE_NAME,
 
