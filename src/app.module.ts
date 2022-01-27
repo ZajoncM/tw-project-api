@@ -5,6 +5,7 @@ import { CompaniesModule } from './companies/companies.module';
 import { DatabaseModule } from './database/database.module';
 import { StatesModule } from './states/states.module';
 import { CompanyYearModule } from './company-year/company-year.module';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -15,7 +16,7 @@ import { CompanyYearModule } from './company-year/company-year.module';
     StatesModule,
     CompanyYearModule,
   ],
-  controllers: [],
+  controllers: [AppController],
   providers: [],
 })
 export class AppModule {}
